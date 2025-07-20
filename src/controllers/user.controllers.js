@@ -6,6 +6,92 @@ import {
   uploadToCloudinary,
 } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+
+const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(500, [], "A user with provided id does not exist");
+    }
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({
+      validateBeforeSave: false,
+    });
+    return { accessToken, refreshToken };
+  } catch (err) {
+    throw new ApiError(err.status, err, err.message, err.stack);
+  }
+};
+
+const loginUser = asyncHandler(async (req, res) => {
+  try {
+    if (!req.body) {
+      throw new ApiError(405, [], "form data sent to server cannot be empty!");
+    }
+
+    const username = req.body.username?.trim();
+    const email = req.body.email?.trim();
+    const password = req.body.password?.trim();
+
+    // checking if not empty
+
+    if (email === "" && username === "") {
+      throw new ApiError(
+        407,
+        [],
+        "email and username sent to server cannot be both empty"
+      );
+    }
+    if (password === "") {
+      throw new ApiError(408, [], "password sent to server cannot be empty");
+    }
+    const existingUser = User.findOne({
+      $or: [{ username }, { email }],
+    });
+    if (!existingUser) {
+      throw new ApiError(
+        500,
+        [],
+        "A user with provided credentials does not exist"
+      );
+    }
+
+    const isPasswordValid = await existingUser.isPasswordCorrect(password);
+    if (!isPasswordValid) {
+      throw new ApiError(500, [], "Incorrect credentials provided not exist");
+    }
+    const user = existingUser.select("-refreshToken -password");
+
+    // refreshtoken is updated to database during execution of method generateAccessAndRefreshToken
+    const { accessToken, refreshToken } = generateAccessAndRefreshToken(
+      existingUser._id
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiResponse(200, "User Logged in successfully", {
+          user: user,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        })
+      );
+  } catch (err) {
+    console.log("something went wrong while logging in the user.");
+    throw new ApiError(err.status, err, err.message, err.stack);
+  }
+});
+
 const registerUser = asyncHandler(async (req, res) => {
   let avatarUploadCloudinaryRes = "";
   let coverImageUploadtoCloudinaryRes = "";
@@ -93,7 +179,7 @@ const registerUser = asyncHandler(async (req, res) => {
       coverImage: coverImageUploadtoCloudinaryRes?.url || "",
     });
 
-    const createdUser = User.findById(newUser._id).select(
+    const createdUser = await User.findById(newUser._id).select(
       "-password -refreshToken"
     );
     if (!createdUser) {
@@ -118,8 +204,8 @@ const registerUser = asyncHandler(async (req, res) => {
     console.log(
       "something went wrong while creating user and images were deleted"
     );
-    throw new ApiError(err.status,err,err.message,err.stack);
+    throw new ApiError(err.status, err, err.message, err.stack);
   }
 });
 
-export { registerUser };
+export { registerUser, loginUser };
