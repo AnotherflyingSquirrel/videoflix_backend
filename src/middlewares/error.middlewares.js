@@ -5,6 +5,7 @@ import "dotenv/config";
 const errorHandler = (err, req, res, next) => {
   let error = err;
   if (!(error instanceof Error)) {
+    // next();
     return;
   }
   if (!(error instanceof ApiError)) {
@@ -22,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
     // : error instanceof MongooseError
     //   ? 502
     //   : 420;
-    
+
     const message = error.message || "something went wrong!";
     error = new ApiError(
       statusCode,

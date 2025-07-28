@@ -1,5 +1,7 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 const app = express();
 
 // Common middleware
@@ -21,6 +23,7 @@ app.use(
   })
 );
 app.use(express.static("public"));
+app.use(cookieParser());
 
 // import routers
 
@@ -34,6 +37,6 @@ app.use("/api/v1/users", userRouter);
 
 // error handler
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 export { app };

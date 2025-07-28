@@ -2,10 +2,11 @@ import {
   registerUser,
   loginUser,
   logoutUser,
+  refreshAccessToken,
 } from "../controllers/user.controllers.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { addValidUserToReq } from "../middlewares/auth.middlewares.js";
 
 const userRouter = Router();
 
@@ -17,8 +18,10 @@ userRouter.route("/register").post(
   registerUser
 );
 
+userRouter.route("/login").post(upload.fields([]), loginUser);
+
 // secure routes
-userRouter.route("/login").post(verifyJWT, loginUser);
-userRouter.route("/logout").post(verifyJWT, logoutUser);
+userRouter.route("/refreshToken").post(addValidUserToReq, refreshAccessToken);
+userRouter.route("/logout").post(addValidUserToReq, logoutUser);
 
 export { userRouter };

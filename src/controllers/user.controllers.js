@@ -31,6 +31,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const loginUser = asyncHandler(async (req, res) => {
   try {
     if (!req.body) {
+      console.log(req.body);
       throw new ApiError(405, [], "form data sent to server cannot be empty!");
     }
 
@@ -50,7 +51,8 @@ const loginUser = asyncHandler(async (req, res) => {
     if (password === "") {
       throw new ApiError(408, [], "password sent to server cannot be empty");
     }
-    const existingUser = User.findOne({
+
+    const existingUser = await User.findOne({
       $or: [{ username }, { email }],
     });
     if (!existingUser) {
@@ -63,9 +65,10 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const isPasswordValid = await existingUser.isPasswordCorrect(password);
     if (!isPasswordValid) {
-      throw new ApiError(500, [], "Incorrect credentials provided not exist");
+      throw new ApiError(500, [], "Incorrect credentials provided");
     }
-    const user = existingUser.select("-refreshToken -password");
+    delete existingUser.password;
+    delete existingUser.refreshToken;
 
     // refreshtoken is updated to database during execution of method generateAccessAndRefreshToken
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
@@ -77,13 +80,16 @@ const loginUser = asyncHandler(async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     };
 
+    console.log(`user:${existingUser.username} logged in successfully`);
+    console.log(`${refreshToken} logged in successfully`);
+
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
       .json(
         new ApiResponse(200, "User Logged in successfully", {
-          user: user,
+          user: existingUser,
           accessToken: accessToken,
           refreshToken: refreshToken,
         })
@@ -260,27 +266,28 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
-    const { incomingRefreshToken } =
-      req.cookies.refreshToken || req.body.refreshToken;
-    if (!incomingRefreshToken) {
-      throw new ApiError(451, [], "Invalid refresh token");
-    }
-    const userId = jwt.verify(
-      incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET_KEY
-    )?._id;
-    if (!userId) {
-      throw new ApiError(451, [], "Invalid refresh token");
-    }
-    const user = await User.findById(userId);
+    // const { incomingRefreshToken } =
+    //   req.cookies?.refreshToken || req.body.refreshToken;
+    // if (!incomingRefreshToken) {
+    //   throw new ApiError(451, [], "Invalid refresh token");
+    // }
+    // const userId = jwt.verify(
+    //   incomingRefreshToken,
+    //   process.env.REFRESH_TOKEN_SECRET_KEY
+    // )?._id;
+    // if (!userId) {
+    //   throw new ApiError(451, [], "Invalid refresh token");
+    // }
+    const user = req.user ? req.user : null;
     if (!user) {
       throw new ApiError(451, [], "Invalid refresh token");
     }
-    if (user.refreshToken !== incomingRefreshToken) {
-      throw new ApiError(451, [], "Invalid refresh token");
-    }
-
-    const outgoingUser = user.select("-refreshToken -password");
+    // if (user.refreshToken !== incomingRefreshToken) {
+    //   throw new ApiError(451, [], "Invalid refresh token");
+    // }
+    delete user.password;
+    delete user.refreshToken;
+    const outgoingUser = user;
 
     // refreshtoken is updated to database during execution of method generateAccessAndRefreshToken
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
@@ -329,7 +336,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   };
-
+  console.log(`user:${user} logged out successfully`);
   return res
     .status(212)
     .clearCookie("accessToken", options)
