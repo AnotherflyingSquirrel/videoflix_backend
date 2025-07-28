@@ -8,11 +8,21 @@ const errorHandler = (err, req, res, next) => {
     return;
   }
   if (!(error instanceof ApiError)) {
-    const statusCode = error.status
-      ? error.status
-      : error instanceof MongooseError
-        ? 502
-        : 420;
+    let statusCode;
+    if (error.status) {
+      statusCode = error.status;
+    } else {
+      if (error instanceof MongooseError) {
+        statusCode = 502;
+      } else {
+        statusCode = 420;
+      }
+    }
+    // ? error.status
+    // : error instanceof MongooseError
+    //   ? 502
+    //   : 420;
+    
     const message = error.message || "something went wrong!";
     error = new ApiError(
       statusCode,

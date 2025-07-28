@@ -6,6 +6,8 @@ import {
   uploadToCloudinary,
 } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import fs from "node:fs";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -66,7 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = existingUser.select("-refreshToken -password");
 
     // refreshtoken is updated to database during execution of method generateAccessAndRefreshToken
-    const { accessToken, refreshToken } = generateAccessAndRefreshToken(
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
       existingUser._id
     );
 
@@ -95,15 +97,17 @@ const loginUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   let avatarUploadCloudinaryRes = "";
   let coverImageUploadtoCloudinaryRes = "";
+  let avatarLocalPath = "";
+  let coverImageLocalPath = "";
 
   try {
     if (!req.body) {
       throw new ApiError(405, [], "form data sent to server cannot be empty!");
     }
-    let fullname = req.body.fullname;
-    let username = req.body.username;
-    let password = req.body.password;
-    let email = req.body.email;
+    let fullname = req.body?.fullname;
+    let username = req.body?.username;
+    let password = req.body?.password;
+    let email = req.body?.email;
 
     //   validation
     if (fullname?.trim() === "") {
@@ -118,7 +122,6 @@ const registerUser = asyncHandler(async (req, res) => {
     if (password?.trim() === "") {
       throw new ApiError(408, [], "password sent to server cannot be empty");
     }
-    let avatarLocalPath;
     try {
       // console.log(`${req.files.avatar[0].path.toString()}`);
       avatarLocalPath = req.files?.avatar[0]?.path;
@@ -130,7 +133,6 @@ const registerUser = asyncHandler(async (req, res) => {
         e.stack
       );
     }
-    let coverImageLocalPath;
     try {
       coverImageLocalPath = req.files?.coverImage[0]?.path;
     } catch (e) {
@@ -189,6 +191,30 @@ const registerUser = asyncHandler(async (req, res) => {
         "something went wrong and User was not created on db"
       );
     }
+    if (avatarLocalPath) {
+      fs.unlink(avatarLocalPath, (error) => {
+        if (error)
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete avatarImage from localPath",
+            error.stack
+          );
+        console.log("avatarImage was deleted");
+      });
+    }
+    if (coverImageLocalPath) {
+      fs.unlink(coverImageLocalPath, (error) => {
+        if (error)
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete coverImage from localPath",
+            error.stack
+          );
+        console.log("coverImage was deleted");
+      });
+    }
     return res
       .status(202)
       .json(
@@ -201,6 +227,30 @@ const registerUser = asyncHandler(async (req, res) => {
     if (coverImageUploadtoCloudinaryRes) {
       deleteFromCloudinary(coverImageUploadtoCloudinaryRes.publicID);
     }
+    if (avatarLocalPath) {
+      fs.unlink(avatarLocalPath, (error) => {
+        if (error)
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete avatarImage from localPath",
+            error.stack
+          );
+        console.log("avatarImage was deleted");
+      });
+    }
+    if (coverImageLocalPath) {
+      fs.unlink(coverImageLocalPath, (error) => {
+        if (error)
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete coverImage from localPath",
+            error.stack
+          );
+        console.log("coverImage was deleted");
+      });
+    }
     console.log(
       "something went wrong while creating user and images were deleted"
     );
@@ -208,4 +258,83 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser };
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  try {
+    const { incomingRefreshToken } =
+      req.cookies.refreshToken || req.body.refreshToken;
+    if (!incomingRefreshToken) {
+      throw new ApiError(451, [], "Invalid refresh token");
+    }
+    const userId = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET_KEY
+    )?._id;
+    if (!userId) {
+      throw new ApiError(451, [], "Invalid refresh token");
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(451, [], "Invalid refresh token");
+    }
+    if (user.refreshToken !== incomingRefreshToken) {
+      throw new ApiError(451, [], "Invalid refresh token");
+    }
+
+    const outgoingUser = user.select("-refreshToken -password");
+
+    // refreshtoken is updated to database during execution of method generateAccessAndRefreshToken
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+      user._id
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiResponse(210, "Access token refreshedsuccessfully", {
+          user: outgoingUser,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        })
+      );
+  } catch (err) {
+    console.error("error while refreshing refresh token");
+    throw new ApiError(
+      err.statusCode,
+      err,
+      "couldn't refresh the refresh and access token",
+      err.stack
+    );
+  }
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    { new: true }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+  return res
+    .status(212)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(212, "User successfully logged out", {}));
+});
+
+export { registerUser, loginUser, refreshAccessToken, logoutUser };
