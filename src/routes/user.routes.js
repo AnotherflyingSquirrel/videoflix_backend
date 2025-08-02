@@ -17,6 +17,8 @@ import { addValidUserToReq } from "../middlewares/auth.middlewares.js";
 
 const userRouter = Router();
 
+// unsecure routes
+
 userRouter.route("/register").post(
   upload.fields([
     { name: "avatar", maxCount: 1 },
@@ -24,10 +26,10 @@ userRouter.route("/register").post(
   ]),
   registerUser
 );
-
 userRouter.route("/login").post(loginUser);
 
 // secure routes
+
 userRouter.route("/refreshToken").post(addValidUserToReq, refreshAccessToken);
 userRouter.route("/logout").post(addValidUserToReq, logoutUser);
 userRouter
