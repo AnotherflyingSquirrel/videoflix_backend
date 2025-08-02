@@ -33,10 +33,10 @@
 
 ## Overview
 
-VIDEOFLIX is an online video streaming platform built using Javascript in the nodeJS runtime Environment.
-VIDEOFLIX uses ExpressJS to serve HTTP requests from a frontend server at an exposed API endpoint.
-Images and videos are fetched from a cloudinary database. User data, likes, comments, user watch history,subscriptions and playlist data is fetched from a mongoDB database using mongoose.
-This repository is the codebase for the backend server for VIDEOFLIX.
+- VIDEOFLIX is an online video streaming platform built using Javascript in the nodeJS runtime Environment.
+- VIDEOFLIX uses ExpressJS to serve HTTP requests from a frontend server at an exposed API endpoint.
+- Images and videos are fetched from a cloudinary database. User data, likes, comments, user watch history,subscriptions and playlist data is fetched from a mongoDB database using mongoose.
+- This repository is the codebase for the backend server for VIDEOFLIX.
 
 ---
 
@@ -47,7 +47,7 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 - Access and Refresh tokens to validate client sessions
 - User profile and passwordUpdation
 - User cover and avatar image updation
-- View users' channel 
+- View users' channel
 - Watch history exploration
 - Extensive Error handling
 - Like functionality for comments and videos
@@ -103,11 +103,11 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 			<table>
 			<tr>
 				<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/package-lock.json'>package-lock.json</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/package.json'>package.json</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td></td>
 			</tr>
 			</table>
 		</blockquote>
@@ -118,15 +118,15 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 			<table>
 			<tr>
 				<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/app.js'>app.js</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/index.js'>index.js</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/constants.js'>constants.js</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td></td>
 			</tr>
 			</table>
 			<details>
@@ -135,15 +135,15 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/middlewares/multer.middlewares.js'>multer.middlewares.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/middlewares/auth.middlewares.js'>auth.middlewares.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/middlewares/error.middlewares.js'>error.middlewares.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -154,15 +154,15 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/controllers/like.controllers.js'>like.controllers.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/controllers/healthcheck.controllers.js'>healthcheck.controllers.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/controllers/user.controllers.js'>user.controllers.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -173,31 +173,31 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/playlist.models.js'>playlist.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/comment.models.js'>comment.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/tweet.models.js'>tweet.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/subscription.models.js'>subscription.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/like.models.js'>like.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/video.models.js'>video.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/models/user.models.js'>user.models.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -208,11 +208,11 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/routes/user.routes.js'>user.routes.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/routes/healthcheck.routes.js'>healthcheck.routes.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -223,19 +223,19 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/utils/apiError.js'>apiError.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/utils/apiResponse.js'>apiResponse.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/utils/cloudinary.js'>cloudinary.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/utils/asyncHandler.js'>asyncHandler.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -246,7 +246,7 @@ This repository is the codebase for the backend server for VIDEOFLIX.
 					<table>
 					<tr>
 						<td><b><a href='https://github.com/AnotherflyingSquirrel/videoflix_backend/blob/master/src/db/index.js'>index.js</a></b></td>
-						<td><code>❯ REPLACE-ME</code></td>
+						<td></td>
 					</tr>
 					</table>
 				</blockquote>
@@ -324,7 +324,7 @@ Run videoflix_backend using the following command:
 ### Testing
 
 - preferred:
-Import Postman documentation for this collection by importing the `videoFlix.postman_collection.json` file into your postman workspace
+  Import Postman documentation for this collection by importing the `videoFlix.postman_collection.json` file into your postman workspace
 
 Run the test suite using the following command:
 **Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
