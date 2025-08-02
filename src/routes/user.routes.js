@@ -23,5 +23,9 @@ userRouter.route("/login").post(upload.fields([]), loginUser);
 // secure routes
 userRouter.route("/refreshToken").post(addValidUserToReq, refreshAccessToken);
 userRouter.route("/logout").post(addValidUserToReq, logoutUser);
+userRouter.route("/").post(addValidUserToReq, logoutUser);
+userRouter.route("/logout").post(addValidUserToReq, logoutUser);
+userRouter.route("/logout").post(addValidUserToReq, logoutUser);
+userRouter.route("/logout").post(addValidUserToReq, logoutUser);
 
 export { userRouter };

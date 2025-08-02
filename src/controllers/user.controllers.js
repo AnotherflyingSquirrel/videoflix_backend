@@ -344,4 +344,259 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(212, "User successfully logged out", {}));
 });
 
-export { registerUser, loginUser, refreshAccessToken, logoutUser };
+const updateCurrentPassword = asyncHandler(async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user?._id);
+    const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+
+    if (!isPasswordValid) {
+      throw new ApiError(500, [], "Incorrect credentials passed");
+    }
+
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false });
+
+    return res
+      .status(216)
+      .json(new ApiResponse(216, "Password updated successfully", {}));
+  } catch (e) {
+    console.log(`Couldn't update user password\n`);
+    throw new ApiError(
+      e.statusCode,
+      e,
+      "Faield to update user password",
+      e.stack
+    );
+  }
+});
+
+const getCurrentUserProfile = asyncHandler(async (req, res) => {
+  return res
+    .status(214)
+    .json(new ApiResponse(214, "User fetched successfully", req.user));
+});
+
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  try {
+    let fullname = req.user?.fullname;
+    let email = req.user?.email;
+
+    //   validation
+    if (fullname?.trim() === "") {
+      throw new ApiError(406, [], "full name sent to server cannot be empty");
+    }
+    if (email?.trim() === "") {
+      throw new ApiError(407, [], "email sent to server cannot be empty");
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+        $set: {
+          fullname: fullname,
+          email: email.toLowerCase(),
+        },
+      },
+      { new: true }
+    ).select("-password -refreshToken");
+
+    return res
+      .status(216)
+      .json(new ApiResponse(216, user, "Account details updated successfully"));
+  } catch (e) {
+    console.log(`Couldn't update user details\n`);
+    throw new ApiError(
+      e.statusCode,
+      e,
+      "Failed to update user profile",
+      e.stack
+    );
+  }
+});
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  let avatarLocalPath;
+  let avatarUploadCloudinaryRes;
+  try {
+    // console.log(`${req.files.avatar[0].path.toString()}`);
+    avatarLocalPath = req.files?.avatar[0]?.path;
+  } catch (e) {
+    throw new ApiError(
+      409,
+      e,
+      "avatar image sent to server cannot be read",
+      e.stack
+    );
+  }
+  if (!avatarLocalPath) {
+    throw new ApiError(
+      409,
+      e,
+      "avatar image sent to server cannot be empty",
+      e.stack
+    );
+  }
+  try {
+    avatarUploadCloudinaryRes = await uploadToCloudinary(avatarLocalPath);
+    if (avatarUploadCloudinaryRes === null) {
+      throw new ApiError(520, [], "avatar image upload to cloudinary failed");
+    }
+
+    if (!avatarUploadCloudinaryRes.url) {
+      throw new ApiError(520, "Error while uploading on cloudinary");
+    }
+    if (avatarLocalPath) {
+      fs.unlink(avatarLocalPath, (error) => {
+        if (error) {
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete avatarImage from localPath",
+            error.stack
+          );
+        }
+        console.log("avatarImage was deleted");
+      });
+    }
+    const oldAvatarImageURL = req.user?.avatar;
+    if (oldAvatarImageURL) {
+      deleteFromCloudinary(oldAvatarImageURL);
+    }
+    // if (avatarUploadCloudinaryRes) {
+    //   await deleteFromCloudinary(avatarUploadCloudinaryRes.publicID);
+    // }
+    // const avatarUploadCloudinaryRes=  = user
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+        $set: {
+          avatar: avatarUploadCloudinaryRes.url,
+        },
+      },
+      { new: true }
+    ).select("-password -refreshToken");
+
+    return res
+      .status(216)
+      .json(new ApiResponse(216, user, "Avatar image updated successfully"));
+  } catch (e) {
+    if (avatarLocalPath) {
+      fs.unlink(avatarLocalPath, (error) => {
+        if (error) {
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete avatarImage from localPath",
+            error.stack
+          );
+        }
+        console.log("avatarImage was deleted");
+      });
+    }
+    if (avatarUploadCloudinaryRes) {
+      deleteFromCloudinary(avatarUploadCloudinaryRes.publicID);
+    }
+
+    throw new ApiError(e.statusCode, e, "Failed to update avatar image",e.stack);
+  }
+});
+
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+  let coverLocalPath;
+  let coverUploadCloudinaryRes;
+  try {
+    // console.log(`${req.files.cover[0].path.toString()}`);
+    coverLocalPath = req.files?.coverImage[0]?.path;
+  } catch (e) {
+    throw new ApiError(
+      409,
+      e,
+      "cover image sent to server cannot be read",
+      e.stack
+    );
+  }
+  if (!coverLocalPath) {
+    throw new ApiError(
+      409,
+      e,
+      "cover image sent to server cannot be empty",
+      e.stack
+    );
+  }
+  try {
+    coverUploadCloudinaryRes = await uploadToCloudinary(coverLocalPath);
+    if (coverUploadCloudinaryRes === null) {
+      throw new ApiError(520, [], "cover image upload to cloudinary failed");
+    }
+
+    if (!coverUploadCloudinaryRes.url) {
+      throw new ApiError(520, "Error while uploading on cloudinary");
+    }
+    if (coverLocalPath) {
+      fs.unlink(coverLocalPath, (error) => {
+        if (error) {
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete coverImage from localPath",
+            error.stack
+          );
+        }
+        console.log("coverImage was deleted");
+      });
+    }
+    const oldcoverImageURL = req.user?.coverImage;
+    if (oldcoverImageURL) {
+      deleteFromCloudinary(oldcoverImageURL);
+    }
+    // if (coverUploadCloudinaryRes) {
+    //   await deleteFromCloudinary(coverUploadCloudinaryRes.publicID);
+    // }
+    // const coverUploadCloudinaryRes=  = user
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+        $set: {
+          cover: coverUploadCloudinaryRes.url,
+        },
+      },
+      { new: true }
+    ).select("-password -refreshToken");
+
+    return res
+      .status(216)
+      .json(new ApiResponse(216, user, "cover image updated successfully"));
+  } catch (e) {
+    if (coverLocalPath) {
+      fs.unlink(coverLocalPath, (error) => {
+        if (error) {
+          throw new ApiError(
+            err.status,
+            err,
+            "couldnt delete coverImage from localPath",
+            error.stack
+          );
+        }
+        console.log("coverImage was deleted");
+      });
+    }
+    if (coverUploadCloudinaryRes) {
+      deleteFromCloudinary(coverUploadCloudinaryRes.publicID);
+    }
+    throw new ApiError(e.statusCode, e, "Failed to update cover image",e.stack);
+  }
+});
+
+export {
+  registerUser,
+  loginUser,
+  refreshAccessToken,
+  logoutUser,
+  updateCurrentPassword,
+  updateUserCoverImage,
+  updateUserAvatar,
+  updateAccountDetails,
+  getCurrentUserProfile,
+};
