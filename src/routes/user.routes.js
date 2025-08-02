@@ -3,6 +3,13 @@ import {
   loginUser,
   logoutUser,
   refreshAccessToken,
+  updateCurrentPassword,
+  getCurrentUserProfile,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage,
+  getChannel,
+  getCurrentWatchHistory,
 } from "../controllers/user.controllers.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
@@ -18,14 +25,36 @@ userRouter.route("/register").post(
   registerUser
 );
 
-userRouter.route("/login").post(upload.fields([]), loginUser);
+userRouter.route("/login").post(loginUser);
 
 // secure routes
 userRouter.route("/refreshToken").post(addValidUserToReq, refreshAccessToken);
 userRouter.route("/logout").post(addValidUserToReq, logoutUser);
-userRouter.route("/").post(addValidUserToReq, logoutUser);
-userRouter.route("/logout").post(addValidUserToReq, logoutUser);
-userRouter.route("/logout").post(addValidUserToReq, logoutUser);
-userRouter.route("/logout").post(addValidUserToReq, logoutUser);
+userRouter
+  .route("/change-password")
+  .post(addValidUserToReq, updateCurrentPassword);
+userRouter.route("/current-user").get(addValidUserToReq, getCurrentUserProfile);
+userRouter.route("/channel/:username").get(addValidUserToReq, getChannel);
+userRouter
+  .route("/update-profile")
+  .patch(addValidUserToReq, updateAccountDetails);
+userRouter
+  .route("/update-avatar")
+  .patch(
+    upload.fields([{ name: "avatar", maxCount: 1 }]),
+    addValidUserToReq,
+    updateUserAvatar
+  );
+userRouter
+  .route("/update-cover-image")
+  .patch(
+    upload.fields([{ name: "coverImage", maxCount: 1 }]),
+    addValidUserToReq,
+    updateUserCoverImage
+  );
+
+userRouter
+  .route("/watch-history")
+  .get(addValidUserToReq, getCurrentWatchHistory);
 
 export { userRouter };

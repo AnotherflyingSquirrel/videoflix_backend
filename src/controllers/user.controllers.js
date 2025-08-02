@@ -499,7 +499,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
       deleteFromCloudinary(avatarUploadCloudinaryRes.publicID);
     }
 
-    throw new ApiError(e.statusCode, e, "Failed to update avatar image",e.stack);
+    throw new ApiError(
+      e.statusCode,
+      e,
+      "Failed to update avatar image",
+      e.stack
+    );
   }
 });
 
@@ -585,7 +590,149 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     if (coverUploadCloudinaryRes) {
       deleteFromCloudinary(coverUploadCloudinaryRes.publicID);
     }
-    throw new ApiError(e.statusCode, e, "Failed to update cover image",e.stack);
+    throw new ApiError(
+      e.statusCode,
+      e,
+      "Failed to update cover image",
+      e.stack
+    );
+  }
+});
+
+const getChannel = asyncHandler(async (req, res) => {
+  try {
+    let { username } = req.params;
+    username = username?.trim()?.toLowerCase();
+    if (!username) {
+      throw new ApiError(424, [], "Invalid Channel Name");
+    }
+
+    const channel = await User.aggregate([
+      {
+        $match: {
+          username: username,
+        },
+      },
+      {
+        $lookup: {
+          from: "Subscription",
+          localField: "_id",
+          foreignField: "channel",
+          as: "subscribers",
+        },
+      },
+      {
+        $lookup: {
+          from: "Subscription",
+          localField: "_id",
+          foreignField: "subscriber",
+          as: "subscribedTo",
+        },
+      },
+      {
+        $addFields: {
+          subscribersCount: {
+            $size: "$subscribers",
+          },
+          channelsSubscribedToCount: {
+            $size: "$subscribedTo",
+          },
+          //check if current user is subscribed to the channel
+          isSubscribed: {
+            $cond: {
+              if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+              then: true,
+              else: false,
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          fullname: 1,
+          username: 1,
+          subscribersCount: 1,
+          channelsSubscribedToCount: 1,
+          isSubscribed: 1,
+          avatar: 1,
+          coverImage: 1,
+          email: 1,
+          subscribedTo: 1,
+        },
+      },
+    ]);
+
+    if (!channel?.length) {
+      throw new ApiError(424, [], "Invalid Channel Name");
+    }
+
+    return res
+      .status(214)
+      .json(new ApiResponse(214, "User channel fetched successfully", channel));
+  } catch (e) {
+    throw new ApiError(e.status, e, "Failed to get channel info", e.stack);
+  }
+});
+const getCurrentWatchHistory = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.user._id),
+        },
+      },
+      {
+        $lookup: {
+          from: "videos",
+          localField: "watchHistory",
+          foreignField: "_id",
+          as: "watchHistory",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                  {
+                    $project: {
+                      fullName: 1,
+                      username: 1,
+                      avatar: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                owner: {
+                  $arrayElemAt: ["$owner", 0],
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          user[0].watchHistory,
+          "Watch history fetched successfully"
+        )
+      );
+  } catch (e) {
+    throw new ApiError(
+      e.status,
+      e,
+      "Failed to get user watch history",
+      e.stack
+    );
   }
 });
 
@@ -599,4 +746,6 @@ export {
   updateUserAvatar,
   updateAccountDetails,
   getCurrentUserProfile,
+  getChannel,
+  getCurrentWatchHistory,
 };
