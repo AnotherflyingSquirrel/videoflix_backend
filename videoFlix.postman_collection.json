@@ -1,0 +1,632 @@
+{
+	"info": {
+		"_postman_id": "eeac490c-cfa1-452d-b1d6-7f2025db855d",
+		"name": "videoFlix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46562937",
+		"_collection_link": "https://vidflix.postman.co/workspace/1253ab79-c559-463b-8b1b-c85ee67a2561/collection/46562937-eeac490c-cfa1-452d-b1d6-7f2025db855d?action=share&source=collection_link&creator=46562937"
+	},
+	"item": [
+		{
+			"name": "healthcheck",
+			"item": [
+				{
+					"name": "Healthcheck test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/healthcheck/test/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"healthcheck",
+								"test",
+								""
+							]
+						},
+						"description": "## Health Check Test Endpoint\n\nThis endpoint is used to perform a health check on the VidTube service. It helps in verifying the operational status of the service by returning relevant information.\n\n### Request\n\n- **Method**: GET\n    \n- **URL**: `{{vidtube}}/healthcheck/test/`\n    \n\n### Response\n\nThe expected response will typically include the following:\n\n- **Status**: A message indicating the health status of the service (e.g., \"OK\", \"Service Unavailable\").\n    \n- **Timestamp**: The current server time when the health check was performed.\n    \n\n### Notes\n\n- This endpoint is useful for monitoring and ensuring that the VidTube service is running as expected.\n    \n- It can be integrated into automated health monitoring systems to alert if the service is down or experiencing issues."
+					},
+					"response": []
+				},
+				{
+					"name": "Healthcheck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/healthcheck/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"healthcheck",
+								""
+							]
+						},
+						"description": "## Health Check Endpoint\n\nThis endpoint is used to perform a health check on the VidTube service. It allows users to verify that the service is operational and responsive.\n\n### Request\n\n- **Method**: `GET`\n    \n- **URL**: `{{vidtube}}/healthcheck/`\n    \n\n### Response\n\nUpon a successful request, the expected response is a JSON object that indicates the health status of the service. The response typically includes:\n\n- **status**: A string indicating the operational status of the service (e.g., \"healthy\" or \"unhealthy\").\n    \n- **timestamp**: A timestamp of when the health check was performed.\n    \n\n### Notes\n\n- This endpoint does not require any request parameters.\n    \n- It is recommended to periodically check the health of the service to ensure that it is running smoothly."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullname",
+									"value": "Shailesh Nehra",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "1@1.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/home/aflyingsquirrel/Pictures/wallpaper/228410.jpg"
+								},
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/home/aflyingsquirrel/Pictures/Screenshots/Screenshot from 2025-07-26 22-34-27.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/register",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						},
+						"description": "## User Registration Endpoint\n\nThis endpoint allows new users to register an account on the platform. It requires specific user information to be submitted via a POST request.\n\n### Request Parameters\n\nThe request must include the following form-data parameters:\n\n- **fullname** (text): The full name of the user.\n    \n- **username** (text): The desired username for the account.\n    \n- **email** (text): The email address of the user for account verification and communication.\n    \n- **password** (text): The password for the user account, which should be kept secure.\n    \n- **avatar** (file): An optional file upload for the user's profile picture.\n    \n- **coverImage** (file): An optional file upload for the user's cover image.\n    \n\n### Expected Response\n\nUpon successful registration, the server will respond with a JSON object indicating the status of the request. The response will have the following structure:\n\n- **status**: Indicates the overall status of the request (0 for failure, 1 for success).\n    \n- **errors**: Contains any validation errors encountered during the registration process. It includes:\n    \n    - **status**: Indicates the error status.\n        \n    - **errors**: An array of specific error messages, if any.\n        \n    - **success**: A boolean indicating whether the request was successful.\n        \n- **message**: A message providing additional context about the request status.\n    \n- **stack**: A stack trace for debugging purposes, if applicable.\n    \n\n### Notes\n\n- A status code of `410` indicates that the requested resource is no longer available. Ensure that the endpoint is correctly configured and accessible.\n    \n- Always validate user inputs to avoid errors and ensure a smooth registration process."
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/login",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### User Login Endpoint\n\nThis endpoint allows users to log in to the VidTube platform by providing their credentials.\n\n#### Request\n\n- **Method**: POST\n    \n- **URL**: `{{vidtube}}/users/login`\n    \n\n##### Request Body (form-data)\n\n- **username** (text): The username of the user attempting to log in.\n    \n- **password** (text): The password associated with the provided username.\n    \n\n#### Response\n\n- **Status Code**: 200\n    \n- **Content-Type**: text/xml\n    \n- The response content is expected to be in XML format, though specific details are not provided in the response body.\n    \n\n#### Notes\n\n- Ensure that the username and password are correctly provided to avoid authentication errors.\n    \n- The response indicates a successful login, but further details about the user session or token may need to be retrieved through subsequent requests."
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/users/logout",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						},
+						"description": "## Logout User\n\nThis endpoint allows users to log out from their session. It is an HTTP POST request sent to the `/users/logout` endpoint.\n\n### Request Method\n\n- **POST**\n    \n\n### Endpoint\n\n- `{{vidtube}}/users/logout`\n    \n\n### Request Parameters\n\nNo specific parameters are required in the request body for this endpoint.\n\n### Expected Response\n\nThe response will be in JSON format and includes the following fields:\n\n- **data**: An object that may contain additional information related to the logout process (currently empty).\n    \n- **status**: An integer indicating the status of the request (0 indicates success).\n    \n- **message**: A string that may contain a message related to the logout process (currently empty).\n    \n- **isSuccessful**: A boolean value indicating whether the logout was successful (`true`).\n    \n\n### Response Example\n\n``` json\n{\n    \"data\": {},\n    \"status\": 0,\n    \"message\": \"\",\n    \"isSuccessful\": true\n}\n\n ```\n\nThis endpoint should be used to ensure that the user session is properly terminated."
+					},
+					"response": []
+				},
+				{
+					"name": "refresh access token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/users/refreshToken",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"refreshToken"
+							]
+						},
+						"description": "## Refresh User Token\n\nThis endpoint allows users to refresh their authentication tokens. It is typically used when the current access token has expired, providing a new access token and refresh token for continued access to protected resources.\n\n### Request\n\n- **Method**: POST\n    \n- **Endpoint**: `{{vidtube}}/users/refreshToken`\n    \n\n#### Request Body Parameters\n\nThe request body should be in JSON format and include the following parameters:\n\n- **refreshToken** (string): The token that is used to obtain a new access token. This is essential for the refresh operation.\n    \n\n### Response\n\nOn a successful request, the API will return a JSON object with the following structure:\n\n- **data**: Contains the user information and tokens.\n    \n    - **user**: An object representing the user.\n        \n        - **_id** (string): The unique identifier for the user.\n            \n        - **username** (string): The username of the user.\n            \n        - **email** (string): The email address of the user.\n            \n        - **fullname** (string): The full name of the user.\n            \n        - **avatar** (string): The URL of the user's avatar image.\n            \n        - **coverImage** (string): The URL of the user's cover image.\n            \n        - **watchHistory** (array): An array containing the user's watch history.\n            \n        - **createdAt** (string): The date and time when the user was created.\n            \n        - **updatedAt** (string): The date and time when the user was last updated.\n            \n        - **__v** (number): The version key for the user document.\n            \n        - **refreshToken** (string): The new refresh token issued.\n            \n    - **accessToken** (string): The new access token issued.\n        \n    - **refreshToken** (string): The new refresh token issued.\n        \n- **status** (number): The status code of the response.\n    \n- **message** (string): A message providing additional information about the response.\n    \n- **isSuccessful** (boolean): Indicates whether the request was successful.\n    \n\n### Notes\n\n- Ensure that the refresh token provided in the request is valid and not expired.\n    \n- This endpoint is crucial for maintaining user sessions without requiring re-authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "update user password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/change-password",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "## Change Password\n\nThis endpoint allows users to change their password by providing their username and the new password.\n\n### Request Parameters\n\n- **username** (text): The username of the account for which the password is being changed.\n    \n- **password** (text): The new password that the user wishes to set for their account.\n    \n\n### Expected Response\n\nUpon a successful request, the API will return a response indicating the success of the password change operation. The response will typically include a status message confirming that the password has been updated successfully.\n\n### Notes\n\n- Ensure that the new password meets any security requirements set by the system (e.g., minimum length, complexity).\n    \n- This endpoint is sensitive; ensure that requests are made over HTTPS to protect user credentials."
+					},
+					"response": []
+				},
+				{
+					"name": "get cuurent user details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/current-user",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"current-user"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "# Get Current User Information\n\nThis endpoint retrieves the information of the currently authenticated user. It is useful for obtaining user-specific data after a successful login.\n\n## Request Format\n\n### Method\n\n`GET`\n\n### URL\n\n`{{vidtube}}/users/current-user`\n\n### Request Body\n\nThis endpoint does not require a request body as it uses the HTTP GET method. However, authentication credentials may be necessary in the request headers.\n\n### Expected Request Body Parameters\n\nIf applicable, the following parameters may be sent as part of the request body in `form-data` format:\n\n- **username** (string): The username of the user.\n    \n- **password** (string): The password of the user.\n    \n\n## Response Format\n\nUpon a successful request, the response will typically include the following fields:\n\n- User details such as username, email, and any other relevant user information.\n    \n\n### Response Example\n\n``` json\n{\n  \"username\": \"string\",\n  \"email\": \"string\",\n  ...\n}\n\n ```\n\nEnsure that the request is authenticated to receive the correct user information."
+					},
+					"response": []
+				},
+				{
+					"name": "channel profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/channel/:username",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"channel",
+								":username"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": ""
+								}
+							]
+						},
+						"description": "### Get User Channel Information\n\nThis endpoint retrieves information about a user's channel based on their username. It is useful for obtaining details related to a specific user on the platform.\n\n#### Request Format\n\n- **Method**: GET\n    \n- **Endpoint**: `{{vidtube}}/users/channel/:username`\n    \n- **Path Parameter**:\n    \n    - `username` (string): The unique identifier for the user whose channel information is being requested.\n        \n\n#### Request Body\n\nThe request does not require a body as it is a GET request. However, the following parameters are typically included in the request for authentication purposes (though not directly part of the GET request):\n\n- **username** (text): The username of the user whose channel is being accessed.\n    \n- **password** (text): The password associated with the user's account.\n    \n\n#### Response Structure\n\nThe response will contain the user's channel information, which may include:\n\n- `channelId`: The unique identifier for the channel.\n    \n- `channelName`: The name of the channel.\n    \n- `subscriberCount`: The number of subscribers to the channel.\n    \n- `videoCount`: The total number of videos uploaded to the channel.\n    \n- `description`: A brief description of the channel.\n    \n\nThe exact structure of the response may vary based on the user's channel data."
+					},
+					"response": []
+				},
+				{
+					"name": "get user watch history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/watch-history",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"watch-history"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "## Get User Watch History\n\nThis endpoint retrieves the watch history of a user from the VidTube platform. To access this information, the user must provide valid credentials.\n\n### Request Parameters\n\nThe request requires the following parameters to be sent as form-data:\n\n- **username** (text): The username of the user whose watch history is being requested.\n    \n- **password** (text): The password associated with the user's account.\n    \n\n### Expected Response\n\nUpon successful authentication, the response will contain the user's watch history, which may include details such as video titles, watch dates, and other relevant metadata. The exact structure of the response may vary based on the user's watch history.\n\n### Notes\n\n- Ensure that the credentials provided are correct to avoid authentication errors.\n    \n- This endpoint is sensitive to user privacy; handle the returned data securely."
+					},
+					"response": []
+				},
+				{
+					"name": "update cover image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/update-cover-image",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"update-cover-image"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "## Update Cover Image\n\nThis endpoint allows users to update their cover image by providing their credentials. It utilizes the HTTP PATCH method to make partial modifications to the user's cover image.\n\n### Endpoint\n\n`PATCH {{vidtube}}/users/update-cover-image`\n\n### Request Parameters\n\nThe request body must be sent as form-data and includes the following parameters:\n\n- **username** (text): The username of the user who is attempting to update their cover image.\n    \n- **password** (text): The password of the user for authentication purposes.\n    \n\n### Expected Response Format\n\nUpon a successful request, the server will respond with a confirmation of the cover image update. The response will typically include a status message indicating the success or failure of the operation, along with any relevant details regarding the update.\n\nMake sure to provide valid credentials to ensure the update is processed correctly."
+					},
+					"response": []
+				},
+				{
+					"name": "update avatar image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/update-avatar",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"update-avatar"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### Update User Avatar\n\nThis endpoint allows users to update their avatar by providing their username and password. The request must be made using the HTTP PATCH method.\n\n#### Request Parameters\n\nThe request requires the following parameters in the form-data body:\n\n- **username** (string): The username of the user whose avatar is being updated.\n    \n- **password** (string): The password of the user for authentication purposes.\n    \n\n#### Expected Response\n\nUpon a successful request, the server will return a response indicating the status of the avatar update. The response will typically include a success message and any relevant data regarding the updated avatar.\n\n#### Notes\n\n- Ensure that the username and password provided are correct to avoid authentication errors.\n    \n- This endpoint is secure and should be accessed over HTTPS to protect user credentials."
+					},
+					"response": []
+				},
+				{
+					"name": "update user profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "aflyingsquirrel",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "helloWorld",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/update-profile",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"update-profile"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### Update User Profile\n\nThis endpoint allows users to update their profile information, specifically their username and password.\n\n#### Request Format\n\n- **Method**: PATCH\n    \n- **URL**: `{{vidtube}}/users/update-profile`\n    \n- ParameterTypeDescriptionusernametextThe new username for the user.passwordtextThe new password for the user.\n    \n\n#### Response Structure\n\nThe response will typically include a confirmation of the update operation, along with any relevant user details or error messages if the update fails. The exact structure of the response may vary based on the implementation but will generally indicate success or failure of the operation.\n\nEnsure that the request includes valid data for both fields to successfully update the user's profile."
+					},
+					"response": []
+				}
+			],
+			"description": "User Routes"
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost-8001",
+			"value": "http://localhost:8001",
+			"type": "default"
+		},
+		{
+			"key": "vidtube",
+			"value": "{{localhost-8001}}/api/v1",
+			"type": "default"
+		}
+	]
+}
