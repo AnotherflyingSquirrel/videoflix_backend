@@ -17,7 +17,6 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
-
     user.refreshToken = refreshToken;
     await user.save({
       validateBeforeSave: false,
@@ -31,7 +30,6 @@ const generateAccessAndRefreshToken = async (userId) => {
 const loginUser = asyncHandler(async (req, res) => {
   try {
     if (!req.body) {
-      console.log(req.body);
       throw new ApiError(405, [], "form data sent to server cannot be empty!");
     }
 
@@ -81,7 +79,8 @@ const loginUser = asyncHandler(async (req, res) => {
     };
 
     console.log(`user:${existingUser.username} logged in successfully`);
-    console.log(`${refreshToken} logged in successfully`);
+    // console.log(`${refreshToken} logged in successfully`);
+    // console.log(`${existingUser._id} logged in successfully`);
 
     return res
       .status(200)
@@ -336,7 +335,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   };
-  console.log(`user:${user} logged out successfully`);
+  // console.log(`user:${user} logged out successfully`);
   return res
     .status(212)
     .clearCookie("accessToken", options)

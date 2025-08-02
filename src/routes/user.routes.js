@@ -26,7 +26,7 @@ userRouter.route("/register").post(
   ]),
   registerUser
 );
-userRouter.route("/login").post(loginUser);
+userRouter.route("/login").post(upload.fields([]),loginUser);
 
 // secure routes
 

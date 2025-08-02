@@ -4,17 +4,21 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 
 const addValidUserToReq = asyncHandler(async (req, _, next) => {
+  // console.log(`hello! ${req.cookies.refreshToken}`);
   let refreshTokenJWT =
-    req.signedCookies?.refreshToken ||
-    req.cookies?.refreshToken ||
-    req.header("Authorization")?.toString();
-  refreshTokenJWT = refreshTokenJWT.slice(7);
+    req.cookies.refreshToken ||
+    req.signedCookies.refreshToken ||
+    req.body.refreshToken;
+  if (!refreshTokenJWT) {
+    refreshTokenJWT = req.header("Authorization")?.toString();
+    refreshTokenJWT = refreshTokenJWT.slice(7);
+  }
   if (!refreshTokenJWT) {
     throw new ApiError(456, [], "Invalid JWT verification candidate");
   }
 
   try {
-    console.log(refreshTokenJWT);
+    // console.log(refreshTokenJWT);
     const incomingRefreshToken = jwt.verify(
       refreshTokenJWT,
       process.env.REFRESH_TOKEN_SECRET_KEY
@@ -27,11 +31,13 @@ const addValidUserToReq = asyncHandler(async (req, _, next) => {
     if (!idField) {
       throw new ApiError(456, [], "Invalid JWT verification candidate");
     }
-    const user = User.findById(idField);
+    const user = await User.findById(idField).select("-password");
     if (!user) {
       throw new ApiError(456, [], "Invalid accessToken provided");
     }
-    if (user.refreshToken !== incomingRefreshToken) {
+    // console.log(user._id);
+    // console.log(`${(user.refreshToken)}\n${refreshTokenJWT}`);
+    if (user.refreshToken !== refreshTokenJWT) {
       throw new ApiError(456, [], "Invalid refresh Token");
     }
     req.user = user;
